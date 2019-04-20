@@ -1,0 +1,235 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Swagger HIBC Insurance Claim Settlement.",
+        "version": "1.0.0",
+        "title": "Swagger HIBC Insurance Claim Settlement",
+        
+        "contact": {
+            "email": "seivigz@gmail.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        }
+    },
+    "host": "localhost:3000",
+    "basePath": "/hibc",
+    
+    "schemes": [
+        "http"
+    ],
+    "paths": {
+        "/requestClaim": {
+            "post": {
+                
+                "summary": "Request Claim",
+                "description": "Request Claim",
+                "operationId": "requestClaim",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "HI object",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/RC"
+                        }
+                    }
+                ],
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    }
+                }
+            }
+        },
+        "/processClaim": {
+            "post": {
+                
+                "summary": "process Claim",
+                "description": "process Claim",
+                "operationId": "processClaim",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "HI ID object",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/PC"
+                        }
+                    }
+                ],
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    }
+                }
+            }
+        },
+        "/approveClaim": {
+            "post": {
+                
+                "summary": "Approve Claim",
+                "description": "Approve Claim",
+                "operationId": "approveClaim",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "HI ID object",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ClaimID"
+                        }
+                    }
+                ],
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    }
+                }
+            }
+        },
+        "/getClaimStatus": {
+            "post": {
+                
+                "summary": "Get Claim Status",
+                "description": "Get Claim Status",
+                "operationId": "getClaimStatus",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "HI object",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ClaimID"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "object",
+                            "items": {
+                                "$ref": "#/definitions/HI"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid status value"
+                    }
+                }
+            }
+        },
+        "/getClaimHistory": {
+            "post": {
+                
+                "summary": "Get Claim History",
+                "description": "Get Claim History",
+                "operationId": "getLClaimHistory",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "HI object",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ClaimID"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/HI"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid status value"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "RC": {
+            "type": "object",
+            "properties": {
+                "policyId": {
+                    "type": "string",
+                    "description": "policy ID"
+                },
+                "carrierId": {
+                    "type": "string",
+                    "description": "carrier ID"
+                },
+                "ailment": {
+                    "type": "string",
+                    "description": "ailment"
+                }
+            }
+        },
+        "PC": {
+            "type": "object",
+            "properties": {
+                "claimId": {
+                    "type": "string",
+                    "description": "claim ID"
+                },
+                "trmnt_pkg_id": {
+                    "type": "string",
+                    "description": "trmnt pkg ID"
+                },
+                "hc_id": {
+                    "type": "string",
+                    "description": "hospital ID"
+                }
+            }
+        },
+        "ClaimID": {
+            "type": "object",
+            "properties": {
+                "claimId": {
+                    "type": "string",
+                    "description": "claim ID"
+                }
+            }
+        }
+    },
+    "externalDocs": {
+        "description": "Find out more about Swagger",
+        "url": "http://swagger.io"
+    }
+}
