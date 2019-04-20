@@ -1,0 +1,101 @@
+sudo docker stop $(sudo docker ps -aq)
+sudo docker rm $(sudo docker ps -aq)
+
+#remove docker volume
+sudo docker volume rm $(sudo docker volume ls | awk '{print $2}')
+
+
+## edit / add your peer org's and orderer org's in your crypto-config.yml
+
+## to create ca's - 
+## do sudo ./generate.sh 
+  which will generate ca keys for all your peer org's
+
+## add/change/update details in docker-compose.yml for each peer. 
+## set details of peers, peer services, networks, environments, ca keys in docker-compose.yml
+
+## to update keys in docker-compose.yml data:
+## copy those keys from folder - /crypto-config/peerOrganizations/hospital.hibc.com/ca/508d57c063ea1ef45cb68ef8a7098f3a7be8e068512b12d62bad36a8c57d0212_sk
+   for all the peers and put it in docker-compose.yml according to the peer services environment specified and update key value for    FABRIC_CA_SERVER_CA_KEYFILE=508d57c063ea1ef45cb68ef8a7098f3a7be8e068512b12d62bad36a8c57d0212_sk
+
+
+## to start network - run commands in start.sh or directly start.sh
+#sudo ./start.sh
+sudo docker-compose -f docker-compose.yml up -d
+
+## go to bash
+sudo docker exec -it cli bash
+
+export CHANNEL_NAME=hibcchannel
+
+#create channel
+peer channel create -o orderer.hibc.com:7050 -c $CHANNEL_NAME -f ./config/hibcchannel.tx
+(or)
+peer channel create -o orderer.hibc.com:7050 -c $CHANNEL_NAME -f ./crypto/hibcchannel.tx
+# --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/hibc.com/orderers/orderer.hibc.com/msp/tlscacerts/tlsca.hibc.com-cert.pem
+
+## enable tls for peer - https://hyperledger-fabric.readthedocs.io/en/release-1.4/enable_tls.html
+
+#patient
+export CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/patient.hibc.com/users/Admin@patient.hibc.com/msp
+export CORE_PEER_ADDRESS=peer0.patient.hibc.com:7051
+export CORE_PEER_LOCALMSPID="patientMSP"
+export CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/patient.hibc.com/peers/peer0.patient.hibc.com/tls/ca.crt
+
+#hospital
+export CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/hospital.hibc.com/users/Admin@hospital.hibc.com/msp
+export CORE_PEER_ADDRESS=peer0.hospital.hibc.com:7051
+export CORE_PEER_LOCALMSPID="hospitalMSP"
+export CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/hospital.hibc.com/peers/peer0.hospital.hibc.com/tls/ca.crt
+
+#insurer
+export CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/insurer.hibc.com/users/Admin@insurer.hibc.com/msp
+export CORE_PEER_ADDRESS=peer0.insurer.hibc.com:7051
+export CORE_PEER_LOCALMSPID="insurerMSP"
+export CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/insurer.hibc.com/peers/peer0.insurer.hibc.com/tls/ca.crt
+
+#regulator
+export CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/regulator.hibc.com/users/Admin@regulator.hibc.com/msp
+export CORE_PEER_ADDRESS=peer0.regulator.hibc.com:7051
+export CORE_PEER_LOCALMSPID="regulatorMSP"
+export CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/regulator.hibc.com/peers/peer0.regulator.hibc.com/tls/ca.crt
+
+#join channel
+peer channel join -b hibcchannel.block
+
+peer channel list
+
+peer chaincode list --installed
+
+peer chaincode list --instantiated -C hibcchannel
+
+#install chaincode
+#peer chaincode install -n hibcchannel -p github.com/chaincode/chaincode_example02/go/
+peer chaincode install -n hibccc -v 1.09 -p github.com/hibc/hibc/go/
+
+peer chaincode instantiate -o orderer.example.com:7050 
+##--tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C $CHANNEL_NAME -n mycc -v 1.0 -c '{"Args":["init","a", "100", "b","200"]}' -P "AND ('Org1MSP.peer','Org2MSP.peer')"
+
+
+## call init function in chain code
+peer chaincode instantiate -o orderer.hibc.com:7050 -C $CHANNEL_NAME -n hibccc -v 1.09 -c '{"Args":["init"]}'
+
+## invoke requestClaim function in chaincode
+peer chaincode invoke -o orderer.hibc.com:7050 -C $CHANNEL_NAME -n hibccc -c '{"Args":["requestClaim","a","b","c","d","e","10","11"]}'
+
+peer chaincode list --instantiated -C $CHANNEL_NAME
+
+## invoke processClaim function in chaincode
+peer chaincode invoke -o orderer.hibc.com:7050 -C $CHANNEL_NAME -n hibccc -c '{"Args":["processClaim","a"]}'
+
+peer chaincode invoke -o orderer.hibc.com:7050 -C $CHANNEL_NAME -n hibccc -c '{"Args":["acceptClaims","a"]}'
+
+## check docker
+sudo docker ps -a | grep dev
+
+peer chaincode invoke -o orderer.hibc.com:7050 -C $CHANNEL_NAME -n hibccc -c '{"Args":["getClaimStatus","a"]}'
+acceptClaim
+getClaimStatus
+
+
+peer chaincode invoke -o orderer.hibc.com:7050 -C $CHANNEL_NAME -n hibccc -c '{"Args":["requestClaim","a","b","c","d","e","10","11"]}' -P "OR ('hospitalMSP.peer','insurerMSP.peer')"

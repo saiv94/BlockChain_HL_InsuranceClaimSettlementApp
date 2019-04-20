@@ -41,14 +41,14 @@ type SmartContract struct {
 
 // Define the Claim attributes
 type Claim struct {
-policyId	string	`json:"policyId"`
-carrierId	   string `json:"carrierId:"`
-ailment	string	`json:"ailment"`
-trmnt_pkg_id	string `json:"trmnt_pkg_id"`
-hc_id	string	    `json:"hc_id"`
-claimId string `json:"claimId"`
-Status	string	`json:"status"`
-consent string `json:"consent"`
+PolicyId	string	`json:"PolicyId"`
+CarrierId	   string `json:"CarrierId:"`
+Ailment	string	`json:"Ailment"`
+Trmnt_pkg_id	string `json:"Trmnt_pkg_id"`
+Hc_id	string	    `json:"Hc_id"`
+ClaimId string `json:"ClaimId"`
+Status	string	`json:"Status"`
+Consent string `json:"Consent"`
 }
 
 func (s *SmartContract) Init(APIstub shim.ChaincodeStubInterface) sc.Response {
@@ -78,11 +78,11 @@ func (s *SmartContract) Invoke(APIstub shim.ChaincodeStubInterface) sc.Response 
 // This function is initiate by Patient
 func (s *SmartContract) requestClaim(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 
-    policyId := args[0];
-    carrierId := args[1];
-    ailment := args[2];
-    claimId := time.Now().Format("20060102150405");
-    //claimId := time.Now().Format("20060102150405");
+    PolicyId := args[0];
+    CarrierId := args[1];
+    Ailment := args[2];
+    ClaimId := time.Now().Format("20060102150405");
+    //ClaimId := time.Now().Format("20060102150405");
     //healthcareId := args[4];
     //coverAmount,err := strconv.Atoi(args[5]);
     //requestAmount,err := strconv.Atoi(args[6]);
@@ -90,34 +90,34 @@ func (s *SmartContract) requestClaim(APIstub shim.ChaincodeStubInterface, args [
     //if err != nil {
       //  return shim.Error("Not able to request Claim")
     //} 
-    HC := Claim{policyId: policyId, carrierId: carrierId, ailment: ailment, trmnt_pkg_id: "nil", hc_id: "nil", claimId: claimId, Status: "InValid", consent : "nil"}
+    HC := Claim{PolicyId: PolicyId, CarrierId: CarrierId, Ailment: Ailment, Trmnt_pkg_id: "nil", Hc_id: "nil", ClaimId: ClaimId, Status: "InValid", Consent : "nil"}
     HCBytes,err := json.Marshal(HC)
     if err != nil {
         return shim.Error("Claim not requested!")
     }
    
    //L/CBytes, err := json.Marshal(HC)
-
-    APIstub.PutState(claimId,HCBytes)
+    fmt.Println("status got:",HC.Status)
+    APIstub.PutState(ClaimId,HCBytes)
     fmt.Println("Claim Requested -> ", HC)
-    jsonResp := "{\"ClaimId\":\"" + claimId + "\"}"
-   
-
-    return shim.Success([]byte(jsonResp));
+    jsonResp := "{\"ClaimId\":\"" + ClaimId + "\"}"
+   fmt.Println(jsonResp)
+//[]byte(jsonResp)
+    return shim.Success(HCBytes);
 }
 
 
 func (s *SmartContract) processClaim(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 
-	claimId := args[0];
-        trmnt_pkg_id := args[1];
-        hc_id := args[2];
+	ClaimId := args[0];
+        Trmnt_pkg_id := args[1];
+        Hc_id := args[2];
 	
 	// if err != nil {
 	// 	return shim.Error("No Amount")
 	// }
 
-	HCAsBytes, _ := APIstub.GetState(claimId)
+	HCAsBytes, _ := APIstub.GetState(ClaimId)
 
 	var hc Claim
 
@@ -127,13 +127,13 @@ func (s *SmartContract) processClaim(APIstub shim.ChaincodeStubInterface, args [
 		return shim.Error("Issue with HC json unmarshaling")
 	}
 
-        status := "Approve"
-	HC := Claim{policyId: hc.policyId, carrierId: hc.carrierId, ailment: hc.ailment, trmnt_pkg_id: trmnt_pkg_id, hc_id: hc_id, claimId: hc.claimId, Status: status, consent : "nil"};
+        Status := "Approve"
+	HC := Claim{PolicyId: hc.PolicyId, CarrierId: hc.CarrierId, Ailment: hc.Ailment, Trmnt_pkg_id: Trmnt_pkg_id, Hc_id: Hc_id, ClaimId: hc.ClaimId, Status: Status, Consent : "nil"};
 	HCBytes, err := json.Marshal(HC)
 	if err != nil {
 		return shim.Error("Issue with HC json marshaling")
 	}
-        APIstub.PutState(hc.claimId,HCBytes)
+        APIstub.PutState(hc.ClaimId,HCBytes)
 	fmt.Println("Processing Claim -> ", HC)
 
         return shim.Success(HCBytes)
@@ -141,13 +141,13 @@ func (s *SmartContract) processClaim(APIstub shim.ChaincodeStubInterface, args [
 
 func (s *SmartContract) approveClaim(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 
-        claimId := args[0]
+        ClaimId := args[0]
 	
 	// if err != nil {
 	// 	return shim.Error("No Amount")
 	// }
 
-	HCAsBytes, _ := APIstub.GetState(claimId)
+	HCAsBytes, _ := APIstub.GetState(ClaimId)
 
 	var hc Claim
 
@@ -159,25 +159,25 @@ func (s *SmartContract) approveClaim(APIstub shim.ChaincodeStubInterface, args [
 
 
         if hc.Status == "Approve" {
-                status := "Consent";
-                HC := Claim{policyId: hc.policyId, carrierId: hc.carrierId, ailment: hc.ailment, trmnt_pkg_id: hc.trmnt_pkg_id, hc_id: hc.hc_id, claimId: hc.claimId, Status: status, consent : "Done"};
+                Status := "Consent";
+                HC := Claim{PolicyId: hc.PolicyId, CarrierId: hc.CarrierId, Ailment: hc.Ailment, Trmnt_pkg_id: hc.Trmnt_pkg_id, Hc_id: hc.Hc_id, ClaimId: hc.ClaimId, Status: Status, Consent : "Done"};
                 HCBytes, err := json.Marshal(HC)
 	        if err != nil {
 		        return shim.Error("Issue with HC json marshaling")
 	        }
-                APIstub.PutState(hc.claimId,HCBytes)
+                APIstub.PutState(hc.ClaimId,HCBytes)
 	        fmt.Println("Processing Claim -> ", HC)
                 return shim.Success(HCBytes)
         };
 
-        status := hc.Status;
-        HC := Claim{policyId: hc.policyId, carrierId: hc.carrierId, ailment: hc.ailment, trmnt_pkg_id: hc.trmnt_pkg_id, hc_id: hc.hc_id, claimId: hc.claimId, Status: status, consent : "Done"};
+        Status := hc.Status;
+        HC := Claim{PolicyId: hc.PolicyId, CarrierId: hc.CarrierId, Ailment: hc.Ailment, Trmnt_pkg_id: hc.Trmnt_pkg_id, Hc_id: hc.Hc_id, ClaimId: hc.ClaimId, Status: Status, Consent : "Done"};
 
 	HCBytes, err := json.Marshal(HC)
 	if err != nil {
 		return shim.Error("Issue with HC json marshaling")
 	}
-        APIstub.PutState(hc.claimId,HCBytes)
+        APIstub.PutState(hc.ClaimId,HCBytes)
 	fmt.Println("Processing Claim -> ", HC)
 
         return shim.Success(HCBytes)
@@ -186,13 +186,13 @@ func (s *SmartContract) approveClaim(APIstub shim.ChaincodeStubInterface, args [
 
 func (s *SmartContract) getClaimStatus(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 
-	claimId := args[0];
+	ClaimId := args[0];
 	
 	// if err != nil {
 	// 	return shim.Error("No Amount")
 	// }
 
-	HCAsBytes, _ := APIstub.GetState(claimId)
+	HCAsBytes, _ := APIstub.GetState(ClaimId)
 
 	return shim.Success(HCAsBytes)
 }
@@ -200,11 +200,11 @@ func (s *SmartContract) getClaimStatus(APIstub shim.ChaincodeStubInterface, args
 
 func (s *SmartContract) getClaimHistory(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 
-	claimId := args[0];
+	ClaimId := args[0];
 	
 	
 
-	resultsIterator, err := APIstub.GetHistoryForKey(claimId)
+	resultsIterator, err := APIstub.GetHistoryForKey(ClaimId)
 	if err != nil {
 		return shim.Error("Error retrieving HC history.")
 	}

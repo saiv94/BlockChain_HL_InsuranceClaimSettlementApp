@@ -45,7 +45,7 @@ channel.addOrderer(order);
 //add buyer peer
 var peer = fabric_client.newPeer('grpc://localhost:8051');
 channel.addPeer(peer);
-
+var returnData;
 Fabric_Client.newDefaultKeyValueStore({ path: store_path
 }).then((state_store) => {
 
@@ -89,7 +89,6 @@ Fabric_Client.newDefaultKeyValueStore({ path: store_path
 	var proposalResponses = results[0];
 	var proposal = results[1];
 	let isProposalGood = false;
-        var returnData;
 	if (proposalResponses && proposalResponses[0].response &&
 		proposalResponses[0].response.status === 200) {
 			isProposalGood = true;
@@ -97,12 +96,13 @@ Fabric_Client.newDefaultKeyValueStore({ path: store_path
 		} else {
 			console.error('Transaction proposal was bad');
 		}
-
+	//var returnData;
         returnData = proposalResponses[0].response.payload.toString('utf-8');
         //var returnData = proposalResponses[0].response.payload;
         //returnData = proposalResponses[0].response.payload.toString();
         //returnData = JSON.parse(returnData);
         console.log('xxxxxxxxxxxxxxxxxxx: ' + returnData);
+	//claimData = returnData
 	if (isProposalGood) {
 		console.log(util.format(
 			'Successfully sent Proposal and received ProposalResponse: Status - %s, message - "%s"',
@@ -170,7 +170,7 @@ Fabric_Client.newDefaultKeyValueStore({ path: store_path
 	// check the results in the order the promises were added to the promise all list
 	if (results && results[0] && results[0].status === 'SUCCESS') {
 		console.log('Successfully sent transaction to the orderer.');
-                res.send({code:"200", message: "Claim Requested."});
+                res.send({code:"200", message: "Claim Requested.", claimDetails: returnData});
 	} else {
 		console.error('Failed to order the transaction. Error code: ' + response.status);
 		res.send({code:"500", message: "claim request failed."});
