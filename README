@@ -1,3 +1,8 @@
+
+HIBC - HEALTH INSURANCE BLOCKCHAIN CLAIM PROCESSING
+
+RUN THIS WAY :
+
 ./stop.sh
 
 ./start.sh
