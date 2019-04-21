@@ -61,13 +61,13 @@ Fabric_Client.newDefaultKeyValueStore({ path: store_path
 	fabric_client.setCryptoSuite(crypto_suite);
 
 	// get the enrolled user from persistence, this user will sign all requests
-	return fabric_client.getUserContext('patientUser', true);
+	return fabric_client.getUserContext('APOLLOUser', true);
 }).then((user_from_store) => {
 	if (user_from_store && user_from_store.isEnrolled()) {
-		console.log('Successfully loaded patientUser from persistence');
+		console.log('Successfully loaded APOLLOUser from persistence');
 		member_user = user_from_store;
 	} else {
-		throw new Error('Failed to get patientUser.... run registerUser.js');
+		throw new Error('Failed to get APOLLOUser.... run registerUser.js');
 	}
 
 	// get a transaction id object based on the current user assigned to fabric client
@@ -195,6 +195,8 @@ Fabric_Client.newDefaultKeyValueStore({ path: store_path
 });
 }
 
+
+
 // Issue LC by Bank
 function processClaim(req, res) {
 
@@ -207,8 +209,21 @@ function processClaim(req, res) {
 		channel.addOrderer(order);
 		
 		//add buyer peer
-		var peer = fabric_client.newPeer('grpc://localhost:9051');
+
+                if (req.body.hc_id == "APOLLO") {
+                    var peer = fabric_client.newPeer('grpc://localhost:9051');
+                    var user1 = 'APOLLOUser';               
+                } else if (req.body.hc_id == "MEDICITI") {
+                    var peer = fabric_client.newPeer('grpc://localhost:8051');
+                    var user1 = 'MEDICITIUser';
+                } else {
+			console.error("Hospital HC_ID doesnot exist");
+			res.send({code:"200", message: "Hospital doesn't exist! Check again."});
+                }
+
+		//var peer = fabric_client.newPeer('grpc://localhost:9051');
 		channel.addPeer(peer);	
+                var returnData;
 
 	Fabric_Client.newDefaultKeyValueStore({ path: store_path
 	}).then((state_store) => {
@@ -225,13 +240,13 @@ function processClaim(req, res) {
 		fabric_client.setCryptoSuite(crypto_suite);
 	
 		// get the enrolled user from persistence, this user will sign all requests
-		return fabric_client.getUserContext('hospitalUser', true);
+		return fabric_client.getUserContext(user1, true);
 	}).then((user_from_store) => {
 		if (user_from_store && user_from_store.isEnrolled()) {
-			console.log('Successfully loaded hospitalUser from persistence');
+			console.log('Successfully loaded '+user1+' from persistence');
 			member_user = user_from_store;
 		} else {
-			throw new Error('Failed to get hospitalUser.... run registerUser.js');
+			throw new Error('Failed to get '+user1+' .... run registerUser.js');
 		}
 	
 		// get a transaction id object based on the current user assigned to fabric client
@@ -260,6 +275,8 @@ function processClaim(req, res) {
 			} else {
 				console.error('Transaction proposal was bad');
 			}
+
+                returnData = proposalResponses[0].response.payload.toString('utf-8');
 		if (isProposalGood) {
 			console.log(util.format(
 				'Successfully sent Proposal and received ProposalResponse: Status - %s, message - "%s"',
@@ -327,7 +344,7 @@ function processClaim(req, res) {
 		// check the results in the order the promises were added to the promise all list
 		if (results && results[0] && results[0].status === 'SUCCESS') {
 			console.log('Successfully sent transaction to the orderer.');
-                        res.send({code:"200", message: "Claim Processed. Ready to Approve."});
+                        res.send({code:"200", message: "Claim Processed. Ready to Approve.", claimDetails: returnData});
 		} else {
 			console.error('Failed to order the transaction. Error code: ' + response.status);
 			res.send({code:"500", message: "Claim process failed."});
@@ -357,8 +374,10 @@ function approveClaim(req, res) {
 	channel.addOrderer(order);
 	
 	//add buyer peer
-	var peer = fabric_client.newPeer('grpc://localhost:9051');
+
+	var peer = fabric_client.newPeer('grpc://localhost:7051');
 	channel.addPeer(peer);
+        var returnData;
 
 	Fabric_Client.newDefaultKeyValueStore({ path: store_path
 	}).then((state_store) => {
@@ -375,13 +394,13 @@ function approveClaim(req, res) {
 		fabric_client.setCryptoSuite(crypto_suite);
 	
 		// get the enrolled user from persistence, this user will sign all requests
-		return fabric_client.getUserContext('insurerUser', true);
+		return fabric_client.getUserContext('ICICILOMBARDUser', true);
 	}).then((user_from_store) => {
 		if (user_from_store && user_from_store.isEnrolled()) {
-			console.log('Successfully loaded insurerUser from persistence');
+			console.log('Successfully loaded ICICILOMBARDUser from persistence');
 			member_user = user_from_store;
 		} else {
-			throw new Error('Failed to get insurerUser.... run registerUser.js');
+			throw new Error('Failed to get ICICILOMBARDUser.... run registerUser.js');
 		}
 	
 		// get a transaction id object based on the current user assigned to fabric client
@@ -410,6 +429,8 @@ function approveClaim(req, res) {
 			} else {
 				console.error('Transaction proposal was bad');
 			}
+
+                returnData = proposalResponses[0].response.payload.toString('utf-8');
 		if (isProposalGood) {
 			console.log(util.format(
 				'Successfully sent Proposal and received ProposalResponse: Status - %s, message - "%s"',
@@ -477,7 +498,7 @@ function approveClaim(req, res) {
 		// check the results in the order the promises were added to the promise all list
 		if (results && results[0] && results[0].status === 'SUCCESS') {
 			console.log('Successfully sent transaction to the orderer.');
-                        res.send({code:"200", message: "Claim Approved."});
+                        res.send({code:"200", message: "Claim Approved.", claimDetails: returnData});
 		} else {
 			console.error('Failed to order the transaction. Error code: ' + response.status);
 			res.send({code:"500", message: "approve Claim failed."});
@@ -524,13 +545,13 @@ function getClaimStatus(req, res){
 		fabric_client.setCryptoSuite(crypto_suite);
 	
 		// get the enrolled user from persistence, this user will sign all requests
-		return fabric_client.getUserContext('insurerUser', true);
+		return fabric_client.getUserContext('ICICILOMBARDUser', true);
 	}).then((user_from_store) => {
 		if (user_from_store && user_from_store.isEnrolled()) {
-			console.log('Successfully loaded insurerUser from persistence');
+			console.log('Successfully loaded ICICILOMBARDUser from persistence');
 			member_user = user_from_store;
 		} else {
-			throw new Error('Failed to get insurerUser.... run registerUser.js');
+			throw new Error('Failed to get ICICILOMBARDUser.... run registerUser.js');
 		}
 	
 		// queryCar chaincode function - requires 1 argument, ex: args: ['CAR4'],
@@ -595,13 +616,13 @@ function getClaimHistory(req, res){
 		fabric_client.setCryptoSuite(crypto_suite);
 	
 		// get the enrolled user from persistence, this user will sign all requests
-		return fabric_client.getUserContext('insurerUser', true);
+		return fabric_client.getUserContext('ICICILOMBARDUser', true);
 	}).then((user_from_store) => {
 		if (user_from_store && user_from_store.isEnrolled()) {
-			console.log('Successfully loaded insurerUser from persistence');
+			console.log('Successfully loaded ICICILOMBARDUser from persistence');
 			member_user = user_from_store;
 		} else {
-			throw new Error('Failed to get insurerUser.... run registerUser.js');
+			throw new Error('Failed to get ICICILOMBARDUser.... run registerUser.js');
 		}
 	
 		// queryCar chaincode function - requires 1 argument, ex: args: ['CAR4'],

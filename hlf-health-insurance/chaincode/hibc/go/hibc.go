@@ -48,8 +48,10 @@ Trmnt_pkg_id	string `json:"Trmnt_pkg_id"`
 Hc_id	string	    `json:"Hc_id"`
 ClaimId string `json:"ClaimId"`
 Status	string	`json:"Status"`
-Consent string `json:"Consent"`
+TreatmentAmount int `json:"TreatmentAmount"`
+PolicyCoverage int `json:"PolicyCoverage"`
 }
+
 
 func (s *SmartContract) Init(APIstub shim.ChaincodeStubInterface) sc.Response {
 	return shim.Success(nil)
@@ -84,13 +86,17 @@ func (s *SmartContract) requestClaim(APIstub shim.ChaincodeStubInterface, args [
     ClaimId := time.Now().Format("20060102150405");
     //ClaimId := time.Now().Format("20060102150405");
     //healthcareId := args[4];
-    //coverAmount,err := strconv.Atoi(args[5]);
-    //requestAmount,err := strconv.Atoi(args[6]);
+    //coverPolicyCoverage,err := strconv.Atoi(args[5]);
+    //requestPolicyCoverage,err := strconv.Atoi(args[6]);
     //Status,err := strconv.Atoi(args[7])
     //if err != nil {
       //  return shim.Error("Not able to request Claim")
     //} 
-    HC := Claim{PolicyId: PolicyId, CarrierId: CarrierId, Ailment: Ailment, Trmnt_pkg_id: "nil", Hc_id: "nil", ClaimId: ClaimId, Status: "InValid", Consent : "nil"}
+
+
+
+    HC := Claim{PolicyId: PolicyId, CarrierId: CarrierId, Ailment: Ailment, Trmnt_pkg_id: "nil", Hc_id: "nil", ClaimId: ClaimId, Status: "Valid", TreatmentAmount : 0, PolicyCoverage : 0};
+
     HCBytes,err := json.Marshal(HC)
     if err != nil {
         return shim.Error("Claim not requested!")
@@ -99,6 +105,9 @@ func (s *SmartContract) requestClaim(APIstub shim.ChaincodeStubInterface, args [
    //L/CBytes, err := json.Marshal(HC)
     fmt.Println("status got:",HC.Status)
     APIstub.PutState(ClaimId,HCBytes)
+
+
+
     fmt.Println("Claim Requested -> ", HC)
     jsonResp := "{\"ClaimId\":\"" + ClaimId + "\"}"
    fmt.Println(jsonResp)
@@ -114,7 +123,7 @@ func (s *SmartContract) processClaim(APIstub shim.ChaincodeStubInterface, args [
         Hc_id := args[2];
 	
 	// if err != nil {
-	// 	return shim.Error("No Amount")
+	// 	return shim.Error("No PolicyCoverage")
 	// }
 
 	HCAsBytes, _ := APIstub.GetState(ClaimId)
@@ -127,8 +136,30 @@ func (s *SmartContract) processClaim(APIstub shim.ChaincodeStubInterface, args [
 		return shim.Error("Issue with HC json unmarshaling")
 	}
 
-        Status := "Approve"
-	HC := Claim{PolicyId: hc.PolicyId, CarrierId: hc.CarrierId, Ailment: hc.Ailment, Trmnt_pkg_id: Trmnt_pkg_id, Hc_id: Hc_id, ClaimId: hc.ClaimId, Status: Status, Consent : "nil"};
+        Status := "Reject"
+        Amount := 0
+
+        if Trmnt_pkg_id == "1"{ 
+            Amount = 10000;
+            Status = "Approve";
+        } else if Trmnt_pkg_id == "2" {
+            Amount = 100000;
+            Status = "Approve";
+        } else if Trmnt_pkg_id == "3" {
+            Amount = 200000;
+            Status = "Approve";
+        } else if Trmnt_pkg_id == "4" {
+            Amount = 400000;
+            Status = "Approve";
+        } else {
+            Amount = 0;
+            Status = "Reject";
+        };
+        
+        fmt.Println(Amount);
+
+
+	HC := Claim{PolicyId: hc.PolicyId, CarrierId: hc.CarrierId, Ailment: hc.Ailment, Trmnt_pkg_id: Trmnt_pkg_id, Hc_id: Hc_id, ClaimId: hc.ClaimId, Status: Status, TreatmentAmount: Amount, PolicyCoverage : hc.PolicyCoverage};
 	HCBytes, err := json.Marshal(HC)
 	if err != nil {
 		return shim.Error("Issue with HC json marshaling")
@@ -144,7 +175,7 @@ func (s *SmartContract) approveClaim(APIstub shim.ChaincodeStubInterface, args [
         ClaimId := args[0]
 	
 	// if err != nil {
-	// 	return shim.Error("No Amount")
+	// 	return shim.Error("No PolicyCoverage")
 	// }
 
 	HCAsBytes, _ := APIstub.GetState(ClaimId)
@@ -156,22 +187,26 @@ func (s *SmartContract) approveClaim(APIstub shim.ChaincodeStubInterface, args [
 	if err != nil {
 		return shim.Error("Issue with HC json unmarshaling")
 	}
+    
+        Status := "Approved";
 
+        
+        PolicyCoverage := hc.PolicyCoverage
+        if PolicyCoverage == 0 {
+            PolicyCoverage = 500000;
+        }
 
         if hc.Status == "Approve" {
-                Status := "Consent";
-                HC := Claim{PolicyId: hc.PolicyId, CarrierId: hc.CarrierId, Ailment: hc.Ailment, Trmnt_pkg_id: hc.Trmnt_pkg_id, Hc_id: hc.Hc_id, ClaimId: hc.ClaimId, Status: Status, Consent : "Done"};
-                HCBytes, err := json.Marshal(HC)
-	        if err != nil {
-		        return shim.Error("Issue with HC json marshaling")
-	        }
-                APIstub.PutState(hc.ClaimId,HCBytes)
-	        fmt.Println("Processing Claim -> ", HC)
-                return shim.Success(HCBytes)
+            if PolicyCoverage >= hc.TreatmentAmount {
+                PolicyCoverage = 500000-hc.TreatmentAmount;
+                Status = "Approved";
+            } else {
+                Status = "Coverage exceeded and Rejected."; 
+            };
+            
         };
 
-        Status := hc.Status;
-        HC := Claim{PolicyId: hc.PolicyId, CarrierId: hc.CarrierId, Ailment: hc.Ailment, Trmnt_pkg_id: hc.Trmnt_pkg_id, Hc_id: hc.Hc_id, ClaimId: hc.ClaimId, Status: Status, Consent : "Done"};
+        HC := Claim{PolicyId: hc.PolicyId, CarrierId: hc.CarrierId, Ailment: hc.Ailment, Trmnt_pkg_id: hc.Trmnt_pkg_id, Hc_id: hc.Hc_id, ClaimId: hc.ClaimId, Status: Status, TreatmentAmount : hc.TreatmentAmount, PolicyCoverage : PolicyCoverage};
 
 	HCBytes, err := json.Marshal(HC)
 	if err != nil {
@@ -189,7 +224,7 @@ func (s *SmartContract) getClaimStatus(APIstub shim.ChaincodeStubInterface, args
 	ClaimId := args[0];
 	
 	// if err != nil {
-	// 	return shim.Error("No Amount")
+	// 	return shim.Error("No PolicyCoverage")
 	// }
 
 	HCAsBytes, _ := APIstub.GetState(ClaimId)
@@ -259,6 +294,51 @@ func (s *SmartContract) getClaimHistory(APIstub shim.ChaincodeStubInterface, arg
 	
 
 	return shim.Success(buffer.Bytes())
+}
+
+
+
+
+func getQueryResultForQueryString(stub shim.ChaincodeStubInterface, queryString string) ([]byte, error) {
+
+	fmt.Printf("- getQueryResultForQueryString queryString:\n%s\n", queryString)
+
+	resultsIterator, err := stub.GetQueryResult(queryString)
+	if err != nil {
+		return nil, err
+	}
+	defer resultsIterator.Close()
+
+	// buffer is a JSON array containing QueryRecords
+	var buffer bytes.Buffer
+	buffer.WriteString("[")
+
+	bArrayMemberAlreadyWritten := false
+	for resultsIterator.HasNext() {
+		queryResponse, err := resultsIterator.Next()
+		if err != nil {
+			return nil, err
+		}
+		// Add a comma before array members, suppress it for the first array member
+		if bArrayMemberAlreadyWritten == true {
+			buffer.WriteString(",")
+		}
+		buffer.WriteString("{\"Key\":")
+		buffer.WriteString("\"")
+		buffer.WriteString(queryResponse.Key)
+		buffer.WriteString("\"")
+
+		buffer.WriteString(", \"Record\":")
+		// Record is a JSON object, so we write as-is
+		buffer.WriteString(string(queryResponse.Value))
+		buffer.WriteString("}")
+		bArrayMemberAlreadyWritten = true
+	}
+	buffer.WriteString("]")
+
+	fmt.Printf("- getQueryResultForQueryString queryResult:\n%s\n", buffer.String())
+
+	return buffer.Bytes(), nil
 }
 
 

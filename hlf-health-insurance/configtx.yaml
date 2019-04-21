@@ -26,69 +26,87 @@ Organizations:
         # MSPDir is the filesystem path which contains the MSP configuration
         MSPDir: crypto-config/ordererOrganizations/hibc.com/msp
 
-    - &patient
+    - &APOLLO
         # DefaultOrg defines the organization which is used in the sampleconfig
         # of the fabric.git development environment
-        Name: patientMSP
+        Name: APOLLOMSP
 
         # ID to load the MSP definition as
-        ID: patientMSP
+        ID: APOLLOMSP
 
-        MSPDir: crypto-config/peerOrganizations/patient.hibc.com/msp
+        MSPDir: crypto-config/peerOrganizations/APOLLO.hibc.com/msp
 
         AnchorPeers:
             # AnchorPeers defines the location of peers which can be used
             # for cross org gossip communication.  Note, this value is only
             # encoded in the genesis block in the Application section context
-            - Host: peer0.patient.hibc.com
+            - Host: peer0.APOLLO.hibc.com
               Port: 7051
-    - &hospital
+    - &MEDICITI
         # DefaultOrg defines the organization which is used in the sampleconfig
         # of the fabric.git development environment
-        Name: hospitalMSP
+        Name: MEDICITIMSP
 
         # ID to load the MSP definition as
-        ID: hospitalMSP
+        ID: MEDICITIMSP
 
-        MSPDir: crypto-config/peerOrganizations/hospital.hibc.com/msp
+        MSPDir: crypto-config/peerOrganizations/MEDICITI.hibc.com/msp
 
         AnchorPeers:
             # AnchorPeers defines the location of peers which can be used
             # for cross org gossip communication.  Note, this value is only
             # encoded in the genesis block in the Application section context
-            - Host: peer0.hospital.hibc.com
+            - Host: peer0.MEDICITI.hibc.com
               Port: 7051
-    - &insurer
+    - &ICICILOMBARD
         # DefaultOrg defines the organization which is used in the sampleconfig
         # of the fabric.git development environment
-        Name: insurerMSP
+        Name: ICICILOMBARDMSP
 
         # ID to load the MSP definition as
-        ID: insurerMSP
+        ID: ICICILOMBARDMSP
 
-        MSPDir: crypto-config/peerOrganizations/insurer.hibc.com/msp
+        MSPDir: crypto-config/peerOrganizations/ICICILOMBARD.hibc.com/msp
 
         AnchorPeers:
             # AnchorPeers defines the location of peers which can be used
             # for cross org gossip communication.  Note, this value is only
             # encoded in the genesis block in the Application section context
-            - Host: peer0.insurer.hibc.com
+            - Host: peer0.ICICILOMBARD.hibc.com
               Port: 7051
-    - &regulator
+
+    - &TATAAIG
         # DefaultOrg defines the organization which is used in the sampleconfig
         # of the fabric.git development environment
-        Name: regulatorMSP
+        Name: TATAAIGMSP
 
         # ID to load the MSP definition as
-        ID: regulatorMSP
+        ID: TATAAIGMSP
 
-        MSPDir: crypto-config/peerOrganizations/regulator.hibc.com/msp
+        MSPDir: crypto-config/peerOrganizations/TATAAIG.hibc.com/msp
 
         AnchorPeers:
             # AnchorPeers defines the location of peers which can be used
             # for cross org gossip communication.  Note, this value is only
             # encoded in the genesis block in the Application section context
-            - Host: peer0.regulator.hibc.com
+            - Host: peer0.TATAAIG.hibc.com
+              Port: 7051
+
+    - &IRDA
+        # DefaultOrg defines the organization which is used in the sampleconfig
+        # of the fabric.git development environment
+        Name: IRDAMSP
+
+        # ID to load the MSP definition as
+        ID: IRDAMSP
+
+        MSPDir: crypto-config/peerOrganizations/IRDA.hibc.com/msp
+
+        AnchorPeers:
+            # AnchorPeers defines the location of peers which can be used
+            # for cross org gossip communication.  Note, this value is only
+            # encoded in the genesis block in the Application section context
+            - Host: peer0.IRDA.hibc.com
               Port: 7051
 
 ################################################################################
@@ -168,20 +186,22 @@ Profiles:
         Consortiums:
             SampleConsortium:
                 Organizations:
-                    - *patient
-                    - *hospital
-                    - *regulator
-                    - *insurer
+                    - *APOLLO
+                    - *MEDICITI
+                    - *IRDA
+                    - *ICICILOMBARD
+                    - *TATAAIG
 
     HIBCOrgChannel:
         Consortium: SampleConsortium
         Application:
             <<: *ApplicationDefaults
             Organizations:
-                - *patient
-                - *hospital
-                - *regulator
-                - *insurer
+                - *APOLLO
+                - *MEDICITI
+                - *IRDA
+                - *ICICILOMBARD
+                - *TATAAIG
 
 ################################################################################
 

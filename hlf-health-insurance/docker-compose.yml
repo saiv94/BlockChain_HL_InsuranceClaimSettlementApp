@@ -9,67 +9,84 @@ networks:
   basic:
 
 services:
-  ca.insurer.hibc.com:
+  ca.ICICILOMBARD.hibc.com:
     image: hyperledger/fabric-ca
     environment:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
-      - FABRIC_CA_SERVER_CA_NAME=ca.insurer.hibc.com
-      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.insurer.hibc.com-cert.pem
-      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/1b7b312df585b05b399444ffa8272e82e4e6c43c5afdae4393f4e5fc9f75daca_sk
+      - FABRIC_CA_SERVER_CA_NAME=ca.ICICILOMBARD.hibc.com
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.ICICILOMBARD.hibc.com-cert.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/da933d2260417e55c8bbd34a697b863beed000e6203c3266d471a9f8ed4728d5_sk
     ports:
       - "7054:7054"
     command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
     volumes:
-      - ./crypto-config/peerOrganizations/insurer.hibc.com/ca/:/etc/hyperledger/fabric-ca-server-config
-    container_name: ca.insurer.hibc.com
+      - ./crypto-config/peerOrganizations/ICICILOMBARD.hibc.com/ca/:/etc/hyperledger/fabric-ca-server-config
+    container_name: ca.ICICILOMBARD.hibc.com
     networks:
       - basic
 
-  ca.regulator.hibc.com:
+  ca.TATAAIG.hibc.com:
     image: hyperledger/fabric-ca
     environment:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
-      - FABRIC_CA_SERVER_CA_NAME=ca.regulator.hibc.com
-      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.regulator.hibc.com-cert.pem
-      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/72363356848c523d48ff9cebdb6565407b5855529d72c52f3437edf2a2fdc1ce_sk
+      - FABRIC_CA_SERVER_CA_NAME=ca.TATAAIG.hibc.com
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.TATAAIG.hibc.com-cert.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/0d5eedaf33408bacbdd88d20e9dd9ed790b22713325597680eb3d1311c5ae406_sk
+    ports:
+      - "10054:7054"
+    command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
+    volumes:
+      - ./crypto-config/peerOrganizations/TATAAIG.hibc.com/ca/:/etc/hyperledger/fabric-ca-server-config
+    container_name: ca.TATAAIG.hibc.com
+    networks:
+      - basic
+
+
+  ca.IRDA.hibc.com:
+    image: hyperledger/fabric-ca
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca.IRDA.hibc.com
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.IRDA.hibc.com-cert.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/07a7259d78c22b0cc62683e30aa01ad96fe8a3b2fd39c9f482f1a33518df4b07_sk
     ports:
       - "6054:7054"
     command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
     volumes:
-      - ./crypto-config/peerOrganizations/regulator.hibc.com/ca/:/etc/hyperledger/fabric-ca-server-config
-    container_name: ca.regulator.hibc.com
+      - ./crypto-config/peerOrganizations/IRDA.hibc.com/ca/:/etc/hyperledger/fabric-ca-server-config
+    container_name: ca.IRDA.hibc.com
     networks:
       - basic
 
-  ca.patient.hibc.com:
+  ca.APOLLO.hibc.com:
     image: hyperledger/fabric-ca
     environment:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
-      - FABRIC_CA_SERVER_CA_NAME=ca.patient.hibc.com
-      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.patient.hibc.com-cert.pem
-      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/4870b086d84077d5589c463c69282c96d0b8c6dd09ff7ded144dab6f1777f1e7_sk
+      - FABRIC_CA_SERVER_CA_NAME=ca.APOLLO.hibc.com
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.APOLLO.hibc.com-cert.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/11430073f932c5c7dfb051ccfd29b19af426cf8f0b085188bf50021d771d3806_sk
     ports:
       - "8054:7054"
     command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
     volumes:
-      - ./crypto-config/peerOrganizations/patient.hibc.com/ca/:/etc/hyperledger/fabric-ca-server-config
-    container_name: ca.patient.hibc.com
+      - ./crypto-config/peerOrganizations/APOLLO.hibc.com/ca/:/etc/hyperledger/fabric-ca-server-config
+    container_name: ca.APOLLO.hibc.com
     networks:
       - basic
 
-  ca.hospital.hibc.com:
+  ca.MEDICITI.hibc.com:
     image: hyperledger/fabric-ca
     environment:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
-      - FABRIC_CA_SERVER_CA_NAME=ca.hospital.hibc.com
-      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.hospital.hibc.com-cert.pem
-      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/a8d2b88ef99a1f545f0387feb4910eaa8e2d889f19bc108e504dfa531f3a2b57_sk
+      - FABRIC_CA_SERVER_CA_NAME=ca.MEDICITI.hibc.com
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.MEDICITI.hibc.com-cert.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/5af03c84650b624951af3098a99b4d2306dc565f81b7d9101c8c655719464c2e_sk
     ports:
       - "9054:7054"
     command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
     volumes:
-      - ./crypto-config/peerOrganizations/hospital.hibc.com/ca/:/etc/hyperledger/fabric-ca-server-config
-    container_name: ca.hospital.hibc.com
+      - ./crypto-config/peerOrganizations/MEDICITI.hibc.com/ca/:/etc/hyperledger/fabric-ca-server-config
+    container_name: ca.MEDICITI.hibc.com
     networks:
       - basic
 
@@ -90,23 +107,25 @@ services:
     volumes:
       - ./config/:/etc/hyperledger/configtx
       - ./crypto-config/ordererOrganizations/hibc.com/orderers/orderer.hibc.com/:/etc/hyperledger/msp/orderer
-      - ./crypto-config/peerOrganizations/patient.hibc.com/peers/peer0.patient.hibc.com/:/etc/hyperledger/msp/peerpatient
-      - ./crypto-config/peerOrganizations/hospital.hibc.com/peers/peer0.hospital.hibc.com/:/etc/hyperledger/msp/peerhospital
-      - ./crypto-config/peerOrganizations/insurer.hibc.com/peers/peer0.insurer.hibc.com/:/etc/hyperledger/msp/peerinsurer
+      - ./crypto-config/peerOrganizations/APOLLO.hibc.com/peers/peer0.APOLLO.hibc.com/:/etc/hyperledger/msp/peerAPOLLO
+      - ./crypto-config/peerOrganizations/MEDICITI.hibc.com/peers/peer0.MEDICITI.hibc.com/:/etc/hyperledger/msp/peerMEDICITI
+      - ./crypto-config/peerOrganizations/ICICILOMBARD.hibc.com/peers/peer0.ICICILOMBARD.hibc.com/:/etc/hyperledger/msp/peerICICILOMBARD
+      - ./crypto-config/peerOrganizations/TATAAIG.hibc.com/peers/peer0.TATAAIG.hibc.com/:/etc/hyperledger/msp/peerTATAAIG
+      - ./crypto-config/peerOrganizations/IRDA.hibc.com/peers/peer0.IRDA.hibc.com/:/etc/hyperledger/msp/peerIRDA
     networks:
       - basic
 
-  peer0.insurer.hibc.com:
-    container_name: peer0.insurer.hibc.com
+  peer0.ICICILOMBARD.hibc.com:
+    container_name: peer0.ICICILOMBARD.hibc.com
     image: hyperledger/fabric-peer
     environment:
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
-      - CORE_PEER_ID=peer0.insurer.hibc.com
+      - CORE_PEER_ID=peer0.ICICILOMBARD.hibc.com
       - CORE_LOGGING_PEER=debug
       - CORE_CHAINCODE_LOGGING_LEVEL=DEBUG
-      - CORE_PEER_LOCALMSPID=insurerMSP
+      - CORE_PEER_LOCALMSPID=ICICILOMBARDMSP
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/peer/
-      - CORE_PEER_ADDRESS=peer0.insurer.hibc.com:7051
+      - CORE_PEER_ADDRESS=peer0.ICICILOMBARD.hibc.com:7051
       # # the following setting starts chaincode containers on the same
       # # bridge network as the peers
       # # https://docs.docker.com/compose/networking/
@@ -126,8 +145,8 @@ services:
       - 7053:7053
     volumes:
         - /var/run/:/host/var/run/
-        - ./crypto-config/peerOrganizations/insurer.hibc.com/peers/peer0.insurer.hibc.com/msp:/etc/hyperledger/msp/peer
-        - ./crypto-config/peerOrganizations/insurer.hibc.com/users:/etc/hyperledger/msp/users
+        - ./crypto-config/peerOrganizations/ICICILOMBARD.hibc.com/peers/peer0.ICICILOMBARD.hibc.com/msp:/etc/hyperledger/msp/peer
+        - ./crypto-config/peerOrganizations/ICICILOMBARD.hibc.com/users:/etc/hyperledger/msp/users
         - ./config:/etc/hyperledger/configtx
     depends_on:
       - orderer.hibc.com
@@ -148,17 +167,17 @@ services:
     networks:
       - basic
 
-  peer0.patient.hibc.com:
-    container_name: peer0.patient.hibc.com
+  peer0.APOLLO.hibc.com:
+    container_name: peer0.APOLLO.hibc.com
     image: hyperledger/fabric-peer
     environment:
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
-      - CORE_PEER_ID=peer0.patient.hibc.com
+      - CORE_PEER_ID=peer0.APOLLO.hibc.com
       - CORE_LOGGING_PEER=debug
       - CORE_CHAINCODE_LOGGING_LEVEL=DEBUG
-      - CORE_PEER_LOCALMSPID=patientMSP
+      - CORE_PEER_LOCALMSPID=APOLLOMSP
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/peer/
-      - CORE_PEER_ADDRESS=peer0.patient.hibc.com:7051
+      - CORE_PEER_ADDRESS=peer0.APOLLO.hibc.com:7051
       # # the following setting starts chaincode containers on the same
       # # bridge network as the peers
       # # https://docs.docker.com/compose/networking/
@@ -178,8 +197,8 @@ services:
       - 8053:7053
     volumes:
         - /var/run/:/host/var/run/
-        - ./crypto-config/peerOrganizations/patient.hibc.com/peers/peer0.patient.hibc.com/msp:/etc/hyperledger/msp/peer
-        - ./crypto-config/peerOrganizations/patient.hibc.com/users:/etc/hyperledger/msp/users
+        - ./crypto-config/peerOrganizations/APOLLO.hibc.com/peers/peer0.APOLLO.hibc.com/msp:/etc/hyperledger/msp/peer
+        - ./crypto-config/peerOrganizations/APOLLO.hibc.com/users:/etc/hyperledger/msp/users
         - ./config:/etc/hyperledger/configtx
     depends_on:
       - orderer.hibc.com
@@ -200,17 +219,17 @@ services:
     networks:
       - basic
 
-  peer0.hospital.hibc.com:
-    container_name: peer0.hospital.hibc.com
+  peer0.MEDICITI.hibc.com:
+    container_name: peer0.MEDICITI.hibc.com
     image: hyperledger/fabric-peer
     environment:
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
-      - CORE_PEER_ID=peer0.hospital.hibc.com
+      - CORE_PEER_ID=peer0.MEDICITI.hibc.com
       - CORE_LOGGING_PEER=debug
       - CORE_CHAINCODE_LOGGING_LEVEL=DEBUG
-      - CORE_PEER_LOCALMSPID=hospitalMSP
+      - CORE_PEER_LOCALMSPID=MEDICITIMSP
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/peer/
-      - CORE_PEER_ADDRESS=peer0.hospital.hibc.com:7051
+      - CORE_PEER_ADDRESS=peer0.MEDICITI.hibc.com:7051
       # # the following setting starts chaincode containers on the same
       # # bridge network as the peers
       # # https://docs.docker.com/compose/networking/
@@ -230,8 +249,8 @@ services:
       - 9053:7053
     volumes:
         - /var/run/:/host/var/run/
-        - ./crypto-config/peerOrganizations/hospital.hibc.com/peers/peer0.hospital.hibc.com/msp:/etc/hyperledger/msp/peer
-        - ./crypto-config/peerOrganizations/hospital.hibc.com/users:/etc/hyperledger/msp/users
+        - ./crypto-config/peerOrganizations/MEDICITI.hibc.com/peers/peer0.MEDICITI.hibc.com/msp:/etc/hyperledger/msp/peer
+        - ./crypto-config/peerOrganizations/MEDICITI.hibc.com/users:/etc/hyperledger/msp/users
         - ./config:/etc/hyperledger/configtx
     depends_on:
       - orderer.hibc.com
@@ -252,17 +271,17 @@ services:
     networks:
       - basic
 
-  peer0.regulator.hibc.com:
-    container_name: peer0.regulator.hibc.com
+  peer0.IRDA.hibc.com:
+    container_name: peer0.IRDA.hibc.com
     image: hyperledger/fabric-peer
     environment:
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
-      - CORE_PEER_ID=peer0.regulator.hibc.com
+      - CORE_PEER_ID=peer0.IRDA.hibc.com
       - CORE_LOGGING_PEER=debug
       - CORE_CHAINCODE_LOGGING_LEVEL=DEBUG
-      - CORE_PEER_LOCALMSPID=regulatorMSP
+      - CORE_PEER_LOCALMSPID=IRDAMSP
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/peer/
-      - CORE_PEER_ADDRESS=peer0.regulator.hibc.com:7051
+      - CORE_PEER_ADDRESS=peer0.IRDA.hibc.com:7051
       # # the following setting starts chaincode containers on the same
       # # bridge network as the peers
       # # https://docs.docker.com/compose/networking/
@@ -283,8 +302,8 @@ services:
       - 6053:7053
     volumes:
         - /var/run/:/host/var/run/
-        - ./crypto-config/peerOrganizations/regulator.hibc.com/peers/peer0.regulator.hibc.com/msp:/etc/hyperledger/msp/peer
-        - ./crypto-config/peerOrganizations/regulator.hibc.com/users:/etc/hyperledger/msp/users
+        - ./crypto-config/peerOrganizations/IRDA.hibc.com/peers/peer0.IRDA.hibc.com/msp:/etc/hyperledger/msp/peer
+        - ./crypto-config/peerOrganizations/IRDA.hibc.com/users:/etc/hyperledger/msp/users
         - ./config:/etc/hyperledger/configtx
     depends_on:
       - orderer.hibc.com
@@ -305,6 +324,59 @@ services:
     networks:
       - basic
 
+  peer0.TATAAIG.hibc.com:
+    container_name: peer0.TATAAIG.hibc.com
+    image: hyperledger/fabric-peer
+    environment:
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_PEER_ID=peer0.TATAAIG.hibc.com
+      - CORE_LOGGING_PEER=debug
+      - CORE_CHAINCODE_LOGGING_LEVEL=DEBUG
+      - CORE_PEER_LOCALMSPID=TATAAIGMSP
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/peer/
+      - CORE_PEER_ADDRESS=peer0.TATAAIG.hibc.com:7051
+      # # the following setting starts chaincode containers on the same
+      # # bridge network as the peers
+      # # https://docs.docker.com/compose/networking/
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COMPOSE_PROJECT_NAME}_basic
+      #- CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=hibcbasic
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb4:5984
+      # The CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME and CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD
+      # provide the credentials for ledger to connect to CouchDB.  The username and password must
+      # match the username and password set for the associated CouchDB.
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+    command: peer node start
+    # command: peer node start --peer-chaincodedev=true
+    ports:
+      - 10051:7051
+      - 10053:7053
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./crypto-config/peerOrganizations/TATAAIG.hibc.com/peers/peer0.TATAAIG.hibc.com/msp:/etc/hyperledger/msp/peer
+        - ./crypto-config/peerOrganizations/TATAAIG.hibc.com/users:/etc/hyperledger/msp/users
+        - ./config:/etc/hyperledger/configtx
+    depends_on:
+      - orderer.hibc.com
+      - couchdb4
+    networks:
+      - basic
+
+  couchdb4:
+    container_name: couchdb4
+    image: hyperledger/fabric-couchdb
+    # Populate the COUCHDB_USER and COUCHDB_PASSWORD to set an admin user and password
+    # for CouchDB.  This will prevent CouchDB from operating in an "Admin Party" mode.
+    environment:
+      - COUCHDB_USER=
+      - COUCHDB_PASSWORD=
+    ports:
+      - 9984:5984
+    networks:
+      - basic
+
 
   cli:
     container_name: cli
@@ -315,9 +387,9 @@ services:
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
       - CORE_LOGGING_LEVEL=DEBUG
       - CORE_PEER_ID=cli
-      - CORE_PEER_ADDRESS=peer0.patient.hibc.com:7051
-      - CORE_PEER_LOCALMSPID=patientMSP
-      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/patient.hibc.com/users/Admin@patient.hibc.com/msp
+      - CORE_PEER_ADDRESS=peer0.APOLLO.hibc.com:7051
+      - CORE_PEER_LOCALMSPID=APOLLOMSP
+      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/APOLLO.hibc.com/users/Admin@APOLLO.hibc.com/msp
       - CORE_CHAINCODE_KEEPALIVE=10
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
     command: /bin/bash
@@ -330,11 +402,13 @@ services:
         - basic
     depends_on:
       - orderer.hibc.com
-      - peer0.insurer.hibc.com
+      - peer0.ICICILOMBARD.hibc.com
       - couchdb0
-      - peer0.patient.hibc.com
+      - peer0.APOLLO.hibc.com
       - couchdb1
-      - peer0.hospital.hibc.com
+      - peer0.MEDICITI.hibc.com
       - couchdb2
-      - peer0.regulator.hibc.com
+      - peer0.IRDA.hibc.com
       - couchdb3
+      - peer0.TATAAIG.hibc.com
+      - couchdb4

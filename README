@@ -1,0 +1,31 @@
+./stop.sh
+
+./start.sh
+
+./setup.sh
+
+cd hibc-api
+
+npm install
+
+node enrollAPOLLOUser
+
+node enrollICICILOMBARDUser
+
+node enrollIRDAUser
+
+node enrollMEDICITIUser
+
+node enrollTATAAIGUser
+
+npm start
+
+-> go to swagger url: http://localhost:3000/api-docs
+
+  --> requestClaim
+  --> processClaim
+  --> approveClaim
+  --> getClaimStatus
+  --> getClaimHistory
+
+--> check couchdb : localhost:5984/_utils/
